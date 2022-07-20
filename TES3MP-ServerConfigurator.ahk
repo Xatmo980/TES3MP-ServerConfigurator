@@ -1,4 +1,4 @@
-﻿#NoTrayIcon
+#NoTrayIcon
 Gui, Main:Add, GroupBox, x2 y9 w190 h140 , Guide
 Gui, Main:Add, Button, gStart x12 y29 w140 h30 , Download
 Gui, Main:Add, Button, gConfig x12 y69 w140 h30 , Configure
@@ -22,19 +22,19 @@ if !FileExist(A_WorkingDir . "\TES3MpServer\7za.exe")
       GuiControl,Main: Disable, Download
       GuiControl,Main: Enable, Configure
     }
-GuiControl,Main: Disable, C1
-GuiControl,Main: Disable, C2
-GuiControl,Main: Disable, C3
+ GuiControl,Main: Disable, C1
+ GuiControl,Main: Disable, C2
+ GuiControl,Main: Disable, C3
 return
 
 Start()
 {
-DownloadServer()
-Progress, Off
-SetWorkingDir % A_WorkingDir . "\TES3MpServer"
-RunWait %comspec% /c "7za x tes3mp.Win64.release.0.8.1.zip -aoa *.* -r",, HIDE
-GuiControl,Main:, C1, 1
-GuiControl,Main: Enable, Configure
+ DownloadServer()
+ Progress, Off
+ SetWorkingDir % A_WorkingDir . "\TES3MpServer"
+ RunWait %comspec% /c "7za x tes3mp.Win64.release.0.8.1.zip -aoa *.* -r",, HIDE
+ GuiControl,Main:, C1, 1
+ GuiControl,Main: Enable, Configure
 }
 
 DownloadServer()
@@ -63,13 +63,7 @@ DownloadServer()
 
 Config()
 {
- Global Pass
- Global EM
- Global LL
- Global S
- Global I
- Global P
- Global M
+ Global Pass, EM, LL, S, I, P, M
  Gui, Con:Add, GroupBox, x2 y9 w190 h50 , Server Name
  Gui, Con:Add, Edit, vS x22 y29 w160 h20 , Name
  Gui, Con:Add, GroupBox, x2 y59 w190 h50 , Ip
@@ -110,14 +104,13 @@ AppendConfig(ServerName, Ip, Port, Players, Password, EnableMaster, LogLvl:=4)
 {
  configText =
  (
- [General]
-  # The default localAddress of 0.0.0.0 makes the server reachable at all of its local addresses
-  # You almost never have to change this
+  [General]
+   # The default localAddress of 0.0.0.0
   localAddress = %Ip%
   port = %Port%
   maximumPlayers = %Players%
   hostname = %ServerName%
-  # 0 - Verbose (spam), 1 - Info, 2 - Warnings, 3 - Errors, 4 - Only fatal errors
+   # 0 - Verbose (spam), 1 - Info, 2 - Warnings, 3 - Errors, 4 - Only fatal errors
   logLevel = %LogLvl%
   password = %Password%
 
@@ -131,9 +124,9 @@ AppendConfig(ServerName, Ip, Port, Players, Password, EnableMaster, LogLvl:=4)
   port = 25561
   rate = 10000
   )
-FileDelete, tes3mp-server-default.cfg
-sleep, 1000
-FileAppend, %configText%, tes3mp-server-default.cfg
+ FileDelete, tes3mp-server-default.cfg
+ sleep, 1000
+ FileAppend, %configText%, tes3mp-server-default.cfg
 }
 
 Run()
@@ -145,15 +138,15 @@ Run()
 
 OpenLocalFirewall()
 {
-Client := A_WorkingDir . "\tes3mp.exe"
-Server := A_WorkingDir . "\tes3mp-server.exe"
-Browser := A_WorkingDir . "\tes3mp-browser.exe"
-Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPClient" dir=in action=allow program="%Client%" enable=yes remoteip=any profile=any",, HIDE
-Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPClient" dir=out action=allow program="%Client%" enable=yes remoteip=any profile=any",, HIDE
-Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPServer" dir=in action=allow program="%Server%" enable=yes remoteip=any profile=any",, HIDE
-Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPServer" dir=out action=allow program="%Server%" enable=yes remoteip=any profile=any",, HIDE
-Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPBrowser" dir=in action=allow program="%Browser%" enable=yes remoteip=any profile=any",, HIDE
-Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPBrowser" dir=out action=allow program="%Browser%" enable=yes remoteip=any profile=any",, HIDE
+ Client := A_WorkingDir . "\tes3mp.exe"
+ Server := A_WorkingDir . "\tes3mp-server.exe"
+ Browser := A_WorkingDir . "\tes3mp-browser.exe"
+ Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPClient" dir=in action=allow program="%Client%" enable=yes remoteip=any profile=any",, HIDE
+ Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPClient" dir=out action=allow program="%Client%" enable=yes remoteip=any profile=any",, HIDE
+ Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPServer" dir=in action=allow program="%Server%" enable=yes remoteip=any profile=any",, HIDE
+ Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPServer" dir=out action=allow program="%Server%" enable=yes remoteip=any profile=any",, HIDE
+ Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPBrowser" dir=in action=allow program="%Browser%" enable=yes remoteip=any profile=any",, HIDE
+ Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPBrowser" dir=out action=allow program="%Browser%" enable=yes remoteip=any profile=any",, HIDE
 }
 
 MainGuiClose:
