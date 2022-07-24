@@ -226,288 +226,36 @@ Advanced:
 
 AdvSave()
 {
+SetWorkingDir % A_WorkingDir . "\TES3MpServer"
  Loop, 30
     {
      GuiControlGet, Adv%A_Index%,Adv:,Adv%A_Index%
     }
-AdvancedTemplate1 =
- (
-  config = {}
+config := ["config.loginTime","config.maxClientsPerIP","config.difficulty","config.passTimeWhenEmpty","config.nightStartHour","config.nightEndHour","config.allowConsole","config.allowBedRest","config.allowWildernessRest","config.allowWait","config.shareJournal","config.shareFactionRanks","config.shareFactionExpulsion","config.shareFactionReputation","config.shareTopics","config.shareBounty","config.shareReputation","config.shareMapExploration","config.shareVideos","config.respawnAtImperialShrine","config.respawnAtTribunalTemple","config.maxAttributeValue","config.maxSpeedValue","config.maxSkillValue","config.maxAcrobaticsValue","config.playersRespawn","config.deathTime","config.deathPenaltyJailDays","config.bountyResetOnDeath","config.bountyDeathPenalty"]
 
-config.dataPath = tes3mp.GetDataPath()
-config.gameMode = "Default"
-config.loginTime = %Adv1%
-config.maxClientsPerIP = %Adv2%
-config.difficulty = %Adv3%
-config.gameSettings = {
-    { name = "best attack", value = false },
-    { name = "prevent merchant equipping", value = false },
-    { name = "enchanted weapons are magical", value = true },
-    { name = "rebalance soul gem values", value = false },
-    { name = "barter disposition change is permanent", value = false },
-    { name = "strength influences hand to hand", value = 0 },
-    { name = "use magic item animations", value = false },
-    { name = "normalise race speed", value = false },
-    { name = "uncapped damage fatigue", value = false },
-    { name = "NPCs avoid collisions", value = false },
-    { name = "swim upward correction", value = false },
-    { name = "trainers training skills based on base skill", value = true },
-    { name = "always allow stealing from knocked out actors", value = false }
+FileRead, ConfigContent, % A_WorkingDir . "\server\scripts\config.lua"
+sleep, 500
+FileDelete, % A_WorkingDir . "\server\scripts\config.lua"
+Loop, parse, ConfigContent, `n, `r
+{
+T = 1
+ Loop % config.Length()
+  {
+    Val := Adv%A_Index%
+    if InStr(A_LoopField, config[A_Index])
+       {
+        Content .= StrReplace(A_LoopField, A_LoopField, config[A_Index] . " = " . Val) . "`n"
+        T = 0
+       }
+  }
+       if T
+       {
+        Content .= A_LoopField . "`n"
+        T = 1
+       }
 }
-config.vrSettings = {
-    { name = "realistic combat minimum swing velocity", value = 1.0 },
-    { name = "realistic combat maximum swing velocity", value = 4.0 }
-}
-config.defaultTimeTable = { year = 427, month = 7, day = 16, hour = 9,
-    daysPassed = 1, dayTimeScale = 30, nightTimeScale = 40 }
-config.chatWindowInstructions = color.White .. "Use " .. color.Yellow .. "Y" .. color.White .. " by default to chat or change it" ..
-    " from your client config.\nType in " .. color.Yellow .. "/help" .. color.White .. " to see the commands" ..
-    " available to you.\nType in " .. color.Yellow .. "/invite <pid>" .. color.White .. " to invite a player to become " ..
-    "your ally so their followers don't react to your friendly fire.\nUse " .. color.Yellow .. "F2" .. color.White ..
-    " by default to hide the chat window or use the " .. color.Yellow .. "Chat Window Mode" .. color.White .. " button from " ..
-    "your left controller menu if you're in VR.\n"
-config.startupScriptsInstructions = color.Red .. "Warning: " .. color.White .. " For some actors and objects to have their correct" ..
-    " initial states, an admin needs to run the " .. color.Yellow .. "/runstartup" .. color.White .. " command.\n"
-config.worldStartupScripts = {"Startup", "BMStartUpScript"}
-config.playerStartupScripts = {"VampireCheck", "WereCheckScript"}
-)
-AdvancedTemplate2 =
- (
-config.passTimeWhenEmpty = %Adv4%
-config.nightStartHour = %Adv5%
-config.nightEndHour = %Adv6%
-config.allowConsole = %Adv7%
-config.allowBedRest = %Adv8%
-config.allowWildernessRest = %Adv9%
-config.allowWait = %Adv10%
-config.shareJournal = %Adv11%
-config.shareFactionRanks = %Adv12%
-config.shareFactionExpulsion = %Adv13%
-config.shareFactionReputation = %Adv14%
-config.shareTopics = %Adv15%
-config.shareBounty = %Adv16%
-config.shareReputation = %Adv17%
-config.shareMapExploration = %Adv18%
-config.shareVideos = %Adv19%
-)
-AdvancedTemplate3 =
- (
-
-config.disabledClientScriptIds = {
-    -- original character generation's scripts
-    "CharGenRaceNPC", "CharGenClassNPC", "CharGenStatsSheet", "CharGenDoorGuardTalker",
-    "CharGenBed", "CharGenStuffRoom", "CharGenFatigueBarrel", "CharGenDialogueMessage",
-    "CharGenDoorEnterCaptain", "CharGenDoorExitCaptain", "CharGenJournalMessage",
-    -- OpenMW's default blacklist
-    "Museum", "MockChangeScript", "doortestwarp", "WereChange2Script", "wereDreamScript2",
-    "wereDreamScript3"
-}
-config.synchronizedClientScriptIds = {
-    -- mechanisms
-    "GG_OpenGate1", "GG_OpenGate2", "Arkn_doors", "nchuleftingthWrong1", "nchuleftingthWrong2",
-    "nchulfetingthRight", "Akula_innerdoors", "Dagoth_doors", "SothaLever1", "SothaLever2",
-    "SothaLever3", "SothaLever4", "SothaLever5", "SothaLever6", "SothaLever7", "SothaLever8",
-    "SothaLever9", "SothaLever10", "SothaLever11", "SothaOilLever", "LocalState",
-    -- quest stages and timers
-    "helsethScript", "KarrodMovement"
-}
-config.useInstancedSpawn = true
-config.instancedSpawn = {
-    cellDescription = "Seyda Neen, Census and Excise Office",
-    position = {1130.3388671875, -387.14947509766, 193},
-    rotation = {0.09375, 1.5078122615814},
-    text = "Multiplayer skips several minutes of the game's introduction and places you at the first quest giver." ..
-        "\n\nYou will be able to meet other players only after you leave this room.",
-    items = {{refId = "chargen statssheet", count = 1, charge = -1, enchantmentCharge = -1, soul = ""}}    
-}
-config.noninstancedSpawn = {
-    cellDescription = "-3, -2",
-    position = {-23894.0, -15079.0, 505},
-    rotation = {0, 1.2},
-    text = "Multiplayer skips over the original character generation." ..
-        "\n\nAs a result, you start out with Caius Cosades' package.",
-    items = {{refId = "bk_a1_1_caiuspackage", count = 1, charge = -1, enchantmentCharge = -1, soul = ""}}
-}
-config.defaultRespawn = {
-    cellDescription = "Balmora, Temple",
-    position = {4700.5673828125, 3874.7416992188, 14758.990234375},
-    rotation = {0.25314688682556, 1.570611000061}
-}
-)
-AdvancedTemplate4 =
- (
-
-config.respawnAtImperialShrine = %Adv20%
-config.respawnAtTribunalTemple = %Adv21%
-config.forbiddenCells = { "ToddTest" }
-config.maxAttributeValue = %Adv22%
-config.maxSpeedValue = %Adv23%
-config.maxSkillValue = %Adv24%
-config.maxAcrobaticsValue = %Adv25%
-config.ignoreModifierWithMaxSkill = false
-config.bannedEquipmentItems = { "helseth's ring" }
-config.playersRespawn = %Adv26%
-config.deathTime = %Adv27%
-config.deathPenaltyJailDays = %Avd28%
-config.bountyResetOnDeath = %Adv29%
-config.bountyDeathPenalty = %Adv30%
-)
-AdvancedTemplate5 =
- (
-
-config.allowSuicideCommand = true
-config.allowFixmeCommand = true
-config.fixmeInterval = 30
-config.rankColors = { serverOwner = color.Orange, admin = color.Red, moderator = color.Green }
-config.customMenuIds = { menuHelper = 9001, confiscate = 9002, recordPrint = 9003 }
-config.menuHelperFiles = { "help", "defaultCrafting", "advancedExample" }
-config.pingDifferenceRequiredForAuthority = 40
-config.enforcedLogLevel = -1
-config.physicsFramerate = 60
-config.allowOnContainerForUnloadedCells = false
-config.enablePlayerCollision = true
-config.enableActorCollision = true
-config.enablePlacedObjectCollision = false
-config.enforcedCollisionRefIds = { "misc_uni_pillow_01", "misc_uni_pillow_02" }
-config.useActorCollisionForPlacedObjects = false
-config.disallowedActivateRefIds = {}
-config.disallowedDeleteRefIds = { "m'aiq" }
-config.disallowedCreateRefIds = {}
-config.disallowedLockRefIds = {}
-config.disallowedTrapRefIds = {}
-config.disallowedStateRefIds = {}
-config.disallowedDoorStateRefIds = {}
-config.maximumObjectScale = 20
-config.generatedRecordIdPrefix = "$custom"
-)
-AdvancedTemplate6 =
- (
-
-config.recordStoreLoadOrder = {
-    { "cell" },
-    { "gamesetting", "script", "spell", "potion", "enchantment", "bodypart", "armor", "clothing",
-      "book", "weapon", "ingredient", "apparatus", "lockpick", "probe", "repair", "light",
-      "miscellaneous", "creature", "npc", "container", "door", "activator", "static", "sound" }
-}
-config.enchantableRecordTypes = { "armor", "book", "clothing", "weapon" }
-config.carriableRecordTypes = { "spell", "potion", "armor", "book", "clothing", "weapon", "ingredient",
-    "apparatus", "lockpick", "probe", "repair", "light", "miscellaneous" }
-config.unplaceableRecordTypes = { "spell", "cell", "script", "gamesetting" }
-config.validRecordSettings = {
-    activator = { "baseId", "id", "name", "model", "script" },
-    apparatus = { "baseId", "id", "name", "model", "icon", "script", "subtype", "weight", "value",
-        "quality" },
-    armor = { "baseId", "id", "name", "model", "icon", "script", "enchantmentId", "enchantmentCharge",
-        "subtype", "weight", "value", "health", "armorRating" },
-    bodypart = { "baseId", "id", "subtype", "part", "model", "race", "vampireState", "flags" },
-    book = { "baseId", "id", "name", "model", "icon", "script", "enchantmentId", "enchantmentCharge",
-        "text", "weight", "value", "scrollState", "skillId" },
-    cell = { "baseId", "id" },
-    clothing = { "baseId", "id", "name", "model", "icon", "script", "enchantmentId", "enchantmentCharge",
-        "subtype", "weight", "value" },
-    container = { "baseId", "id", "name", "model", "script", "weight", "flags" },
-    creature = { "baseId", "id", "name", "model", "script", "scale", "bloodType", "subtype", "level",
-        "health", "magicka", "fatigue", "soulValue", "damageChop", "damageSlash", "damageThrust",
-        "aiFight", "aiFlee", "aiAlarm", "aiServices", "flags" },
-    door = { "baseId", "id", "name", "model", "openSound", "closeSound", "script" },
-    enchantment = { "baseId", "id", "subtype", "cost", "charge", "flags", "effects" },
-    gamesetting = { "baseId", "id", "intVar", "floatVar", "stringVar" },
-    ingredient = { "baseId", "id", "name", "model", "icon", "script", "weight", "value" },
-    light = { "baseId", "id", "name", "model", "icon", "sound", "script", "weight", "value", "time",
-        "radius", "color", "flags" },
-    lockpick = { "baseId", "id", "name", "model", "icon", "script", "weight", "value", "quality", "uses" },
-    miscellaneous = { "baseId", "id", "name", "model", "icon", "script", "weight", "value", "keyState" },
-    npc = { "baseId", "inventoryBaseId", "id", "name", "script", "flags", "gender", "race", "model", "hair",
-        "head", "class", "faction", "level", "health", "magicka", "fatigue", "aiFight", "aiFlee", "aiAlarm",
-        "aiServices", "autoCalc" },
-    potion = { "baseId", "id", "name", "model", "icon", "script", "weight", "value", "autoCalc" },
-    probe = { "baseId", "id", "name", "model", "icon", "script", "weight", "value", "quality", "uses" },
-    repair = { "baseId", "id", "name", "model", "icon", "script", "weight", "value", "quality", "uses" },
-    script = { "baseId", "id", "scriptText" },
-    spell = { "baseId", "id", "name", "subtype", "cost", "flags", "effects" },
-    static = { "baseId", "id", "model" },
-    weapon = { "baseId", "id", "name", "model", "icon", "script", "enchantmentId", "enchantmentCharge",
-        "subtype", "weight", "value", "health", "speed", "reach", "damageChop", "damageSlash", "damageThrust",
-        "flags" },
-    sound = { "baseId", "id", "sound", "volume", "pitch" }
-}
-)
-AdvancedTemplate7 =
- (
-
-config.requiredRecordSettings = {
-    activator = { "name", "model" },
-    apparatus = { "name", "model" },
-    armor = { "name", "model" },
-    bodypart = { "subtype", "part", "model" },
-    book = { "name", "model" },
-    cell = { "id" },
-    clothing = { "name", "model" },
-    container = { "name", "model" },
-    creature = { "name", "model" },
-    door = { "name", "model" },
-    enchantment = {},
-    gamesetting = { "id" },
-    ingredient = { "name", "model" },
-    light = { "model" },
-    lockpick = { "name", "model" },
-    miscellaneous = { "name", "model" },
-    npc = { "name", "race", "class" },
-    potion = { "name", "model" },
-    probe = { "name", "model" },
-    repair = { "name", "model" },
-    script = { "id" },
-    spell = { "name" },
-    static = { "model" },
-    weapon = { "name", "model" },
-    sound = { "sound" }
-}
-config.mutuallyExclusiveRecordSettings = {
-    gamesetting = { "intVar", "floatVar", "stringVar" }
-}
-config.numericalRecordSettings = { "subtype", "charge", "cost", "value", "weight", "quality", "uses",
-    "time", "radius", "health", "armorRating", "speed", "reach", "scale", "part", "bloodType", "level",
-    "magicka", "fatigue", "soulValue", "aiFight", "aiFlee", "aiAlarm", "aiServices", "autoCalc", "gender",
-    "flags", "enchantmentCharge", "intVar", "floatVar" }
-config.booleanRecordSettings = { "scrollState", "keyState", "vampireState" }
-config.minMaxRecordSettings = { "damageChop", "damageSlash", "damageThrust" }
-config.rgbRecordSettings = { "color" }
-config.cellPacketTypes = { "delete", "place", "spawn", "lock", "trap", "scale", "state", "miscellaneous",
-    "doorState", "clientScriptLocal", "container", "equipment", "ai", "death", "actorList", "position",
-    "statsDynamic", "spellsActive", "cellChangeTo", "cellChangeFrom" }
-config.enforceDataFiles = true
-config.ignoreScriptErrors = false
-config.databaseType = "json"
-config.databasePath = config.dataPath .. "/database.db" -- Path where database is stored
-config.disallowedNameStrings = { "bitch", "blowjob", "blow job", "cocksuck", "cunt", "ejaculat",
-    "faggot", "fellatio", "fuck", "gas the ", "Hitler", "jizz", "nigga", "nigger", "smegma", "vagina", "whore" }
-config.playerKeyOrder = { "login", "name", "passwordHash", "passwordSalt", "timestamps", "settings",
-    "character", "customClass", "location", "stats", "fame", "shapeshift", "attributes",
-    "attributeSkillIncreases", "skills", "skillProgress", "recordLinks", "equipment", "inventory",
-    "spellbook", "books", "factionRanks", "factionReputation", "factionExpulsion", "mapExplored",
-    "ipAddresses", "customVariables", "admin", "difficulty", "enforcedLogLevel", "physicsFramerate",
-    "consoleAllowed", "bedRestAllowed", "wildernessRestAllowed", "waitAllowed", "gender", "race",
-    "head", "hair", "class", "birthsign", "cell", "posX", "posY", "posZ", "rotX", "rotZ", "healthBase",
-    "healthCurrent", "magickaBase", "magickaCurrent", "fatigueBase", "fatigueCurrent" }
-config.cellKeyOrder = { "packets", "entry", "lastVisit", "recordLinks", "objectData", "refId", "count",
-    "charge", "enchantmentCharge", "location", "actorList", "ai", "summon", "stats", "cellChangeFrom",
-    "cellChangeTo", "container", "death", "delete", "doorState", "equipment", "inventory", "lock",
-    "place", "position", "scale", "spawn", "state", "statsDynamic", "trap" }
-config.recordstoreKeyOrder = { "general", "permanentRecords", "generatedRecords", "recordLinks",
-    "id", "baseId", "name", "subtype", "gender", "race", "hair", "head", "class", "faction", "cost",
-    "value", "charge", "weight", "autoCalc", "flags", "icon", "model", "script", "attribute", "skill",
-    "rangeType", "area", "duration", "magnitudeMax", "magnitudeMin", "effects", "players", "cells", "global" }
-config.worldKeyOrder = { "general", "time", "topics", "kills", "journal", "customVariables", "type",
-    "index", "quest", "actorRefId", "year", "month", "day", "hour", "daysPassed", "timeScale" }
-
-return config
-}
-)
- SetWorkingDir % A_WorkingDir . "\TES3MpServer"
- FileDelete, % A_WorkingDir .  "\server\scripts\config.lua"
- sleep, 1000
- Loop, 7
-    FileAppend, % AdvancedTemplate%A_Index%, % A_WorkingDir . "\server\scripts\config.lua"
+FileAppend, % Content, % A_WorkingDir . "\server\scripts\config.lua"
+MsgBox % "Saved"
 }
 
 MainGuiClose:
