@@ -39,7 +39,7 @@ Start()
  msg := "Please wait while Extraction is in progress"
  Progress, 0 M FM10 FS8 WM400 WS400 ,`n,%msg%, Extracting - TES3-Server..., Tahoma
  Progress, 100
- RunWait %comspec% /c "7za x tes3mp.Win64.release.0.8.1.zip -aoa *.* -r",, HIDE
+ RunWait %comspec% /c "7za x tes3mp.Win64.release.0.8.1.zip -aoa -r",, HIDE
  Progress, Off
  GuiControl,Main:, C1, 1
  GuiControl,Main: Enable, Configure
@@ -141,6 +141,7 @@ AppendConfig(ServerName, Ip, Port, Players, Password, EnableMaster, LogLvl:=4)
 Run()
 {
  OpenLocalFirewall()
+ SetWorkingDir % A_WorkingDir . "\TES3MpServer"
  Run, tes3mp-server-autorestart.bat
  GuiControl,Main:, C3, 1
 }
