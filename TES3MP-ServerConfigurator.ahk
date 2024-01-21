@@ -157,6 +157,8 @@ OpenLocalFirewall()
  Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPServer" dir=out action=allow program="%Server%" enable=yes remoteip=any profile=any",, HIDE
  Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPBrowser" dir=in action=allow program="%Browser%" enable=yes remoteip=any profile=any",, HIDE
  Run %comspec% /c "netsh advfirewall firewall add rule name="TES3MPBrowser" dir=out action=allow program="%Browser%" enable=yes remoteip=any profile=any",, HIDE
+ Run %comspec% /c "netsh advfirewall firewall set rule group="Network Discovery" new enable=Yes",, HIDE
+ Run %comspec% /c "netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=Yes",, HIDE
 }
 
 Advanced:
